@@ -173,5 +173,7 @@ pyrightconfig.json
 # IDE config
 .vscode/
 
+# Directory with test datasets
+test_data/
 
 # End of https://www.toptal.com/developers/gitignore/api/python
