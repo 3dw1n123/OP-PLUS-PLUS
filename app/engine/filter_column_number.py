@@ -2,19 +2,19 @@ from pandas import DataFrame
 import pandas as pd
 from enum import Enum
 
-class FilterTextMode(Enum):
+
+class FilterNumberMode(Enum):
     RANGE = "range"
     EXACT_MATCH = "exact_match"
 
 
 def filter_column_number(
-    df: pd.DataFrame, 
+    df: pd.DataFrame,
     column: str,
-    mode: FilterTextMode,
-    value:  int | float | None = None, 
+    mode: FilterNumberMode,
+    value: int | float | None = None,
     min_value: int | float | None = None,
     max_value: int | float | None = None,
-    
 ):
     """
     Filtra un DataFrame por coincidencia exacta o rango numérico.
@@ -33,27 +33,23 @@ def filter_column_number(
 
     if column not in df.columns:
         raise KeyError(f"La columna '{column}' no existe en el DataFrame.")
-    
+
     match mode:
-        case FilterTextMode.EXACT_MATCH:
+        case FilterNumberMode.EXACT_MATCH:
             return df[df[column] == value]
 
-
-        case FilterTextMode.RANGE:
+        case FilterNumberMode.RANGE:
             if column not in df.columns:
                 raise KeyError(f"La columna '{column}' no existe en el DataFrame.")
-            
+
             col_numeric = pd.to_numeric(df[column], errors="coerce")
-            
+
             mask = pd.Series(True, index=df.index)
 
             if min_value is not None:
-                mask &= col_numeric >= float(min_value) 
+                mask &= col_numeric >= float(min_value)
 
             if max_value is not None:
                 mask &= col_numeric <= float(max_value)
 
             return df[mask]
-
-
-

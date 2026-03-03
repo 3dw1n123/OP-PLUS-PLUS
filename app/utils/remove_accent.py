@@ -1,7 +1,7 @@
 import unicodedata
 
 
-def remove_accent(text: str) -> str:
+def remove_accent(text: str | None) -> str | None:
     """
     Removes accents from a string
 
@@ -12,4 +12,7 @@ def remove_accent(text: str) -> str:
         String without accents
 
     """
+    if not isinstance(text, str):
+        return text
+
     return unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode("ascii")
