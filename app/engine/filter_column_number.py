@@ -1,17 +1,12 @@
 from pandas import DataFrame
 import pandas as pd
-from enum import Enum
 
-
-class FilterNumberMode(Enum):
-    RANGE = "range"
-    EXACT_MATCH = "exact_match"
 
 
 def filter_column_number(
     df: pd.DataFrame,
     column: str,
-    mode: FilterNumberMode,
+    mode: str,
     value: int | float | None = None,
     min_value: int | float | None = None,
     max_value: int | float | None = None,
@@ -35,10 +30,10 @@ def filter_column_number(
         raise KeyError(f"La columna '{column}' no existe en el DataFrame.")
 
     match mode:
-        case FilterNumberMode.EXACT_MATCH:
+        case "exact_match":
             return df[df[column] == value]
 
-        case FilterNumberMode.RANGE:
+        case "range":
             if column not in df.columns:
                 raise KeyError(f"La columna '{column}' no existe en el DataFrame.")
 

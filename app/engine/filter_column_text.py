@@ -1,21 +1,15 @@
-from enum import Enum
 import pandas as pd
 
-
-class FilterTextMode(Enum):
-    START_WITH = "start_with"
-    END_WITH = "end_with"
-    CONTAIN = "contains"
-    EXACT_MATCH = "exact_match"
 
 
 def filter_column_text(
     df: pd.DataFrame,
     column: str,
     pat: str,
-    mode: FilterTextMode,
+    mode: str,
     case: bool = False,
 ):
+
     """
     Filter a DataFrame based on text matching rules applied to a specific column.
 
@@ -48,18 +42,19 @@ def filter_column_text(
             the specified text matching condition.
     """
     match mode:
-        case FilterTextMode.EXACT_MATCH:
+        case "exact_match":
             return df[df[column].str.fullmatch(pat, case)]
 
-        case FilterTextMode.CONTAIN:
+        case "contains":
             return df[df[column].str.contains(pat, case)]
 
-        case FilterTextMode.START_WITH:
+        case "start_with":
             if not case:
                 return df[df[column].str.lower().str.startswith(pat)]
             return df[df[column].str.startswith(pat)]
 
-        case FilterTextMode.END_WITH:
+        case "end_with":
             if not case:
                 return df[df[column].str.lower().str.endswith(pat)]
             return df[df[column].str.endswith(pat)]
+    return df
