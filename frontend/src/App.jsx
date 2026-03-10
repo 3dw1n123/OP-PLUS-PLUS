@@ -1,30 +1,12 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 import { Table } from "./components/Table";
+import { formatDataset } from "./utils/formatDataset";
+import { transform } from "./api/transform";
 
 function App() {
 
   const [rows, setRows] = useState([]);
-
-  const formatDataset = (dataset) => {
-    // Need to know the keys 
-    const keys = Object.keys(dataset)
-
-    // Need to get the length of dataset
-    const indexes = Object.keys(dataset[keys[0]])
-    // "0", "1", ... "N"
-
-    const table = indexes.map(index => {
-      const row = {}
-      keys.forEach(key => {
-        row[key] = dataset[key][index] ? dataset[key][index] : null
-      })
-      return row
-    })
-
-    return table
-
-  };
 
   const loadInitialData = async () => {
 
@@ -32,33 +14,6 @@ function App() {
     const result = await res.json();
 
     const dataset = JSON.parse(result.dataset);
-
-    setRows(formatDataset(dataset));
-
-  };
-
-  const transform = async (operation, params) => {
-
-    const res = await fetch("http://127.0.0.1:5000/transform", {
-
-      method: "POST",
-
-      headers: {
-        "Content-Type": "application/json"
-      },
-
-      body: JSON.stringify({
-        operation,
-        params
-      })
-
-    });
-
-    const result = await res.json();
-
-
-    const dataset = JSON.parse(result.dataset);
-
 
     setRows(formatDataset(dataset));
 
@@ -83,6 +38,12 @@ function App() {
     loadInitialData();
   }, []);
 
+  const onTransform = async (action, payload) => {
+    const res = await transform(action, payload);
+    const newRows = formatDataset(res);
+    setRows(newRows)
+  }
+
   return (
     <>
       <h2 className="text-3xl mb-4">Dataset Table</h2>
@@ -91,7 +52,7 @@ function App() {
 
         <button
           onClick={() =>
-            transform("remove_accent", {
+            onTransform("remove_accent", {
               columns: ["Nombre", "Categoría"]
             })
           }
@@ -101,7 +62,7 @@ function App() {
 
         <button
           onClick={() =>
-            transform("rename_columns", {
+            onTransform("rename_columns", {
               columns: {
                 Nombre: "Aguacate",
                 Categoría: "Category"
@@ -114,7 +75,7 @@ function App() {
 
         <button
           onClick={() =>
-            transform("filter_text", {
+            onTransform("filter_text", {
               column: "Categoría",
               pat: "Hogar",
               mode: "exact_match"
@@ -126,7 +87,7 @@ function App() {
 
         <button
           onClick={() =>
-            transform("change_case", {
+            onTransform("change_case", {
               columns: {
                 Nombre: "upper"
               }
