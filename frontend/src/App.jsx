@@ -98,11 +98,33 @@ function App() {
         </button>
 
         <button
+          onClick={() =>
+            onTransform("trim_column", {
+              columns: ["Cat-trim"]
+            })
+          }
+        >
+          Trim column
+        </button>
+        <button
+          onClick={() =>
+            onTransform("remove_column", {
+              columns: ["Monto_USD"]
+            })
+          }
+        >
+          Remove column
+        </button>
+
+
+        <button
           onClick={resetDataset}
           style={{ marginLeft: "10px" }}
         >
           Reset dataset
         </button>
+
+
 
       </div>
 

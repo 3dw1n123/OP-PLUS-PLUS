@@ -8,6 +8,8 @@ from app.engine.remove_column_accent import remove_column_accent
 from app.engine.change_name import change_columns
 from app.engine.filter_column_text import filter_column_text
 from app.engine.text_case import text_case_change
+from app.engine.trim_column import trim_column
+from app.engine.remove_column import remove_column
 
 
 app = FastAPI()
@@ -51,11 +53,10 @@ df_current = df.copy()
 
 # -------- Request model --------
 
+
 class TransformRequest(BaseModel):
     operation: str
     params: Dict[str, Any] = {}
-
-
 
 
 TRANSFORMATIONS = {
@@ -63,10 +64,13 @@ TRANSFORMATIONS = {
     "rename_columns": change_columns,
     "filter_text": filter_column_text,
     "change_case": text_case_change,
+    "trim_column": trim_column,
+    "remove_column": remove_column,
 }
 
 
 # -------- API endpoints --------
+
 
 @app.get("/")
 def dataset():
@@ -75,7 +79,6 @@ def dataset():
 
 @app.post("/transform")
 def transform(req: TransformRequest):
-
     global df_current
 
     operation = req.operation
