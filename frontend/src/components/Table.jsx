@@ -1,4 +1,3 @@
-
 export function Table({ rows }) {
 
   if (rows.length === 0) {
@@ -35,7 +34,7 @@ export function Table({ rows }) {
 
   return (
     <div className="text-slate-200 flex px-2 py-4 bg-slate-950 rounded-lg">
-      <table className="w-full">
+      <table className="w-full whitespace-pre">
         <thead>
           <tr className="text-slate-50 min-w-5 min-h-5">
             {
