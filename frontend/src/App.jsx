@@ -1,19 +1,28 @@
 import { useState, useEffect } from "react";
 import "./App.css";
+import { Table } from "./components/Table";
 
 function App() {
 
   const [rows, setRows] = useState([]);
 
   const formatDataset = (dataset) => {
+    // Need to know the keys 
+    const keys = Object.keys(dataset)
 
-    return Object.keys(dataset.Nombre).map((key) => ({
-      Nombre: dataset.Nombre[key]?.trim() ?? "—",
-      Categoría: dataset.Categoría[key],
-      CatTrim: dataset["Cat-trim"][key]?.trim(),
-      Monto_USD: dataset.Monto_USD[key],
-      ID_Code: dataset.ID_Code[key],
-    }));
+    // Need to get the length of dataset
+    const indexes = Object.keys(dataset[keys[0]])
+    // "0", "1", ... "N"
+
+    const table = indexes.map(index => {
+      const row = {}
+      keys.forEach(key => {
+        row[key] = dataset[key][index] ? dataset[key][index] : null
+      })
+      return row
+    })
+
+    return table
 
   };
 
@@ -47,7 +56,9 @@ function App() {
 
     const result = await res.json();
 
+
     const dataset = JSON.parse(result.dataset);
+
 
     setRows(formatDataset(dataset));
 
@@ -67,10 +78,10 @@ function App() {
 
   };
 
- useEffect(() => {
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  loadInitialData();
-}, []);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadInitialData();
+  }, []);
 
   return (
     <>
@@ -89,40 +100,40 @@ function App() {
         </button>
 
         <button
-        onClick={() =>
-          transform("rename_columns", {
-            columns: {
-              Nombre: "Aguacate",
-              Categoría: "Category"
-            }
-          })
-        }
+          onClick={() =>
+            transform("rename_columns", {
+              columns: {
+                Nombre: "Aguacate",
+                Categoría: "Category"
+              }
+            })
+          }
         >
-        Rename columns
+          Rename columns
         </button>
 
         <button
-        onClick={() =>
-          transform("filter_text", {
-            column: "Categoría",
-            pat: "Hogar",
-            mode: "exact_match"
-          })
-        }
+          onClick={() =>
+            transform("filter_text", {
+              column: "Categoría",
+              pat: "Hogar",
+              mode: "exact_match"
+            })
+          }
         >
-        Filter Hogar
+          Filter Hogar
         </button>
 
         <button
-        onClick={() =>
-          transform("change_case", {
-            columns: {
-              Nombre: "upper"
-            }
-          })
-        }
+          onClick={() =>
+            transform("change_case", {
+              columns: {
+                Nombre: "upper"
+              }
+            })
+          }
         >
-        Uppercase name
+          Uppercase name
         </button>
 
         <button
@@ -134,35 +145,7 @@ function App() {
 
       </div>
 
-      <table border="1" cellPadding="8">
-
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Categoría</th>
-            <th>Cat-trim</th>
-            <th>Monto USD</th>
-            <th>ID Code</th>
-          </tr>
-        </thead>
-
-        <tbody>
-
-          {rows.map((row, index) => (
-
-            <tr key={index}>
-              <td>{row.Nombre}</td>
-              <td>{row.Categoría}</td>
-              <td>{row.CatTrim}</td>
-              <td>{row.Monto_USD}</td>
-              <td>{row.ID_Code}</td>
-            </tr>
-
-          ))}
-
-        </tbody>
-
-      </table>
+      <Table rows={rows} />
     </>
   );
 }
