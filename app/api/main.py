@@ -1,7 +1,10 @@
-from fastapi import FastAPI
+from uuid import UUID, uuid4
+from enum import Enum
+from fastapi import FastAPI, UploadFile
+from fastapi.responses import JSONResponse
 import pandas as pd
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import UUID1, UUID4, BaseModel
 from typing import Dict, Any
 
 from app.engine.remove_column_accent import remove_column_accent
@@ -10,6 +13,7 @@ from app.engine.filter_column_text import filter_column_text
 from app.engine.text_case import text_case_change
 from app.engine.trim_column import trim_column
 from app.engine.remove_column import remove_column
+from app.utils.get_file_ext import get_file_ext
 
 
 app = FastAPI()
@@ -99,3 +103,65 @@ def reset_dataset():
     global df_current
     df_current = df.copy()
     return {"dataset": df_current.to_json()}
+
+
+class SupportedFileExtension(str, Enum):
+    CSV = "csv"
+
+
+class Project:
+    def __init__(self, name, data) -> None:
+        self.id = uuid4()
+        self.name = name
+        self.dataset = data
+
+
+store: Dict[UUID, Project] = {
+    UUID("fca87242-4ff0-49b3-8c44-8d17c7da18e0"): Project("mockup", df_current)
+}
+
+
+@app.post("/upload", status_code=201)
+async def upload_file(file: UploadFile):
+    if not file.filename:
+        return JSONResponse({"error": "No upload file sent "}, status_code=400)
+
+    ext = get_file_ext(file.filename)
+
+    try:
+        ext = SupportedFileExtension(ext)
+
+        df: pd.DataFrame | None = None
+        match ext:
+            case SupportedFileExtension.CSV:
+                df = pd.read_csv(file.file)
+                print(df)
+
+        if df is not None:
+            dataset = Project(file.filename, df)
+            store[dataset.id] = dataset
+            return {"id": dataset.id, "name": dataset.name}
+
+    except ValueError:
+        return JSONResponse(
+            {
+                "error": f"Unsupported file type '{ext}'. Only {[ext.value for ext in SupportedFileExtension]} are supported"
+            },
+            status_code=415,
+        )
+
+
+@app.get("/all-projects")
+def get_all_projects():
+    projects = list([id, store[id].name] for id in store)
+    return {"data": projects}
+
+
+@app.get("/{project_id}")
+def get_project(project_id: UUID):
+    if project_id not in store:
+        return JSONResponse(
+            {"error": f"Not found project with id {project_id}"}, status_code=404
+        )
+
+    return {"id": project_id, "name": store[project_id].name}

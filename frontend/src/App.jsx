@@ -44,9 +44,30 @@ function App() {
     setRows(newRows)
   }
 
+
+  const onSubmit = async (ev) => {
+    ev.preventDefault();
+    const url = "http://localhost:5000/upload"
+
+    const formData = new FormData(ev.target);
+
+    const res = await fetch(url, {
+      method: "POST",
+      body: formData
+    })
+
+    const data = await res.json()
+    console.log(data)
+  }
+
   return (
     <>
       <h2 className="text-3xl mb-4">Dataset Table</h2>
+
+      <form onSubmit={onSubmit}>
+        <input name="file" type="file" />
+        <button type="submit">Upload</button>
+      </form>
 
       <div style={{ marginBottom: "20px" }}>
 
