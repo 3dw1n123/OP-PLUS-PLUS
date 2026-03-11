@@ -109,6 +109,7 @@ class SupportedFileExtension(str, Enum):
     CSV = "csv"
 
 
+# General class for managing projects data
 class Project:
     def __init__(self, name, data) -> None:
         self.id = uuid4()
@@ -116,6 +117,7 @@ class Project:
         self.dataset = data
 
 
+# In memory store for projects currently in use
 store: Dict[UUID, Project] = {
     UUID("fca87242-4ff0-49b3-8c44-8d17c7da18e0"): Project("mockup", df_current)
 }
@@ -151,12 +153,14 @@ async def upload_file(file: UploadFile):
         )
 
 
+# Return all the projects that are currently in memory
 @app.get("/all-projects")
 def get_all_projects():
     projects = list([id, store[id].name] for id in store)
     return {"data": projects}
 
 
+# Return a specific project that is currently in memory
 @app.get("/{project_id}")
 def get_project(project_id: UUID):
     if project_id not in store:

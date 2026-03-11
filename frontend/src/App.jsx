@@ -44,7 +44,7 @@ function App() {
     setRows(newRows)
   }
 
-
+  // Send upload file request to the API
   const onSubmit = async (ev) => {
     ev.preventDefault();
     const url = "http://localhost:5000/upload"
