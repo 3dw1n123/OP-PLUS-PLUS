@@ -40,3 +40,30 @@
 .read-the-docs {
   color: #888;
 }
+
+.top-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.upload-form {
+  display: flex;
+  gap: 10px;
+}
+
+.export-select {
+  background-color: #111;
+  color: white;
+  border: 1px solid #333;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.export-select option {
+  background-color: #111;
+  color: white;
+}

@@ -60,14 +60,46 @@ function App() {
     console.log(data)
   }
 
+  const downloadDataset = async (format) => {
+
+    const res = await fetch(`http://localhost:5000/export?format=${format}`)
+
+    const blob = await res.blob()
+
+    const url = window.URL.createObjectURL(blob)
+
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `dataset.${format === "excel" ? "xlsx" : format}`
+
+    document.body.appendChild(a)
+    a.click()
+
+    a.remove()
+  }
+
   return (
     <>
       <h2 className="text-3xl mb-4">Dataset Table</h2>
 
-      <form onSubmit={onSubmit}>
-        <input name="file" type="file" />
-        <button type="submit">Upload</button>
-      </form>
+      <div className="top-controls">
+
+        <form onSubmit={onSubmit} className="upload-form">
+          <input name="file" type="file" />
+          <button type="submit">Upload</button>
+        </form>
+
+        <select
+          className="export-select"
+          onChange={(e) => downloadDataset(e.target.value)}
+        >
+          <option value="">Export dataset</option>
+          <option value="csv">CSV</option>
+          <option value="excel">Excel</option>
+          <option value="json">JSON</option>
+        </select>
+
+      </div>
 
       <div style={{ marginBottom: "20px" }}>
 
