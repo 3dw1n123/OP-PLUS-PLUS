@@ -137,6 +137,28 @@ function App() {
           Remove column
         </button>
 
+        
+        <button
+          onClick={()=>
+              onTransform("filter_number", {
+                column:"Monto_USD",
+                mode: "exact_match",
+                value: 100
+              })
+          }
+        >
+          Filter Number
+        </button>
+
+        <button
+          onClick={()=>
+              onTransform("remove_nulls", {
+                columns: ["Nombre"]
+              })
+          }
+        >
+          Remove nulls
+        </button>
 
         <button
           onClick={resetDataset}
