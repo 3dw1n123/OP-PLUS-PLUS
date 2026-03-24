@@ -12,10 +12,12 @@ from typing import Dict, Any
 from app.engine.remove_column_accent import remove_column_accent
 from app.engine.change_name import change_columns
 from app.engine.filter_column_text import filter_column_text
+from app.engine.filter_column_number import filter_column_number
 from app.engine.text_case import text_case_change
 from app.engine.trim_column import trim_column
 from app.engine.remove_column import remove_column
 from app.engine.export import export_dataframe
+from app.engine.remove_nulls import remove_nulls
 from app.utils.get_file_ext import get_file_ext
 
 app = FastAPI()
@@ -69,9 +71,11 @@ TRANSFORMATIONS = {
     "remove_accent": remove_column_accent,
     "rename_columns": change_columns,
     "filter_text": filter_column_text,
+    "filter_number": filter_column_number,
     "change_case": text_case_change,
     "trim_column": trim_column,
     "remove_column": remove_column,
+    "remove_nulls": remove_nulls,
 }
 
 
