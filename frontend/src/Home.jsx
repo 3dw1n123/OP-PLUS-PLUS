@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router";
 import "./App.css";
+import { upload } from "./api/upload";
 
 function Home() {
 
@@ -8,17 +9,14 @@ function Home() {
   // Send upload file request to the API
   const onSubmit = async (ev) => {
     ev.preventDefault();
-    const url = "http://localhost:5000/upload"
 
     const formData = new FormData(ev.target);
 
-    const res = await fetch(url, {
-      method: "POST",
-      body: formData
-    })
-    const data = await res.json()
-    console.log(data)
-    navigate(`/project/${data.id}`)
+    const res = await upload(formData)
+
+    if (res.id) {
+      navigate(`/project/${res.id}`)
+    }
 
   }
 
