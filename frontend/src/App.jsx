@@ -45,21 +45,6 @@ function App() {
     setRows(newRows)
   }
 
-  // Send upload file request to the API
-  const onSubmit = async (ev) => {
-    ev.preventDefault();
-    const url = "http://localhost:5000/upload"
-
-    const formData = new FormData(ev.target);
-
-    const res = await fetch(url, {
-      method: "POST",
-      body: formData
-    })
-
-    const data = await res.json()
-    console.log(data)
-  }
 
   const downloadDataset = async (format) => {
 
