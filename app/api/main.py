@@ -115,7 +115,7 @@ class SupportedFileExtension(str, Enum):
 
 # General class for managing projects data
 class Project:
-    def __init__(self, name, data) -> None:
+    def __init__(self, name: str, data: pd.DataFrame) -> None:
         self.id = uuid4()
         self.name = name
         self.dataset = data
@@ -165,11 +165,15 @@ def get_all_projects():
 
 
 # Return a specific project that is currently in memory
-@app.get("/{project_id}")
+@app.get("/project/{project_id}")
 def get_project(project_id: UUID):
     if project_id not in store:
         return JSONResponse(
             {"error": f"Not found project with id {project_id}"}, status_code=404
         )
 
-    return {"id": project_id, "name": store[project_id].name}
+    return {
+        "id": project_id,
+        "name": store[project_id].name,
+        "dataset": store[project_id].dataset.to_json(),
+    }

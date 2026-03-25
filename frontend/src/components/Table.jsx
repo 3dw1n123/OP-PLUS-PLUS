@@ -33,9 +33,9 @@ export function Table({ rows }) {
   }
 
   return (
-    <div className="text-slate-200 flex px-2 py-4 bg-slate-950 rounded-lg">
+    <div className="text-slate-200 flex px-2 py-4 bg-slate-950 rounded-lg overflow-scroll h-96">
       <table className="w-full whitespace-pre">
-        <thead>
+        <thead className="">
           <tr className="text-slate-50 min-w-5 min-h-5">
             {
               Object.keys(rows[0]).map(key => (
@@ -46,7 +46,7 @@ export function Table({ rows }) {
         </thead>
         <tbody>
           {rows.map((row, index) => (
-            <tr key={index}>
+            <tr key={index} className="">
               {
                 Object.values(row).map(value => {
                   if (value === null) {

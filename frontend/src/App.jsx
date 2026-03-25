@@ -2,21 +2,22 @@ import { useState, useEffect } from "react";
 import "./App.css";
 import { Table } from "./components/Table";
 import { formatDataset } from "./utils/formatDataset";
-import { transform } from "./api/transform";
+import { getDataset, transform } from "./api/transform";
+import { useParams } from "react-router";
 
 function App() {
-
+  const { id } = useParams()
   const [rows, setRows] = useState([]);
 
   const loadInitialData = async () => {
 
-    const res = await fetch("http://127.0.0.1:5000/");
-    const result = await res.json();
+    //const res = await fetch("http://127.0.0.1:5000/");
+    //const result = await res.json();
 
-    const dataset = JSON.parse(result.dataset);
+    // const dataset = JSON.parse(result.dataset);
 
-    setRows(formatDataset(dataset));
-
+    const res = await getDataset(id)
+    setRows(formatDataset(res));
   };
 
   const resetDataset = async () => {
@@ -63,11 +64,6 @@ function App() {
   return (
     <>
       <h2 className="text-3xl mb-4">Dataset Table</h2>
-
-      <form onSubmit={onSubmit}>
-        <input name="file" type="file" />
-        <button type="submit">Upload</button>
-      </form>
 
       <div style={{ marginBottom: "20px" }}>
 
@@ -137,24 +133,24 @@ function App() {
           Remove column
         </button>
 
-        
+
         <button
-          onClick={()=>
-              onTransform("filter_number", {
-                column:"Monto_USD",
-                mode: "exact_match",
-                value: 100
-              })
+          onClick={() =>
+            onTransform("filter_number", {
+              column: "Monto_USD",
+              mode: "exact_match",
+              value: 100
+            })
           }
         >
           Filter Number
         </button>
 
         <button
-          onClick={()=>
-              onTransform("remove_nulls", {
-                columns: ["Nombre"]
-              })
+          onClick={() =>
+            onTransform("remove_nulls", {
+              columns: ["Nombre"]
+            })
           }
         >
           Remove nulls
