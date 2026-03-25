@@ -2,6 +2,8 @@ from uuid import UUID, uuid4
 from enum import Enum
 from fastapi import FastAPI, UploadFile
 from fastapi.responses import JSONResponse
+from fastapi.responses import StreamingResponse
+
 import pandas as pd
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import UUID1, UUID4, BaseModel
@@ -14,9 +16,9 @@ from app.engine.filter_column_number import filter_column_number
 from app.engine.text_case import text_case_change
 from app.engine.trim_column import trim_column
 from app.engine.remove_column import remove_column
+from app.engine.export import export_dataframe
 from app.engine.remove_nulls import remove_nulls
 from app.utils.get_file_ext import get_file_ext
-
 
 app = FastAPI()
 
@@ -156,6 +158,28 @@ async def upload_file(file: UploadFile):
             status_code=415,
         )
 
+@app.get("/export")
+def export(format: str = "csv"):
+
+    buffer = export_dataframe(df_current, format)
+
+    media_types = {
+        "csv": "text/csv",
+        "excel": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "json": "application/json"
+    }
+
+    filenames = {
+        "csv": "dataset.csv",
+        "excel": "dataset.xlsx",
+        "json": "dataset.json"
+    }
+
+    return StreamingResponse(
+        buffer,
+        media_type=media_types[format],
+        headers={"Content-Disposition": f"attachment; filename={filenames[format]}"},
+    )
 
 # Return all the projects that are currently in memory
 @app.get("/all-projects")
