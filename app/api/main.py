@@ -19,6 +19,7 @@ from app.engine.remove_column import remove_column
 from app.engine.export import export_dataframe
 from app.engine.remove_nulls import remove_nulls
 from app.utils.get_file_ext import get_file_ext
+import json
 
 app = FastAPI()
 
@@ -196,8 +197,10 @@ def get_project(project_id: UUID):
             {"error": f"Not found project with id {project_id}"}, status_code=404
         )
 
+    df_json = store[project_id].dataset.to_json(orient="records")
+
     return {
         "id": project_id,
         "name": store[project_id].name,
-        "dataset": store[project_id].dataset.to_json(),
+        "dataset": json.loads(df_json)
     }
