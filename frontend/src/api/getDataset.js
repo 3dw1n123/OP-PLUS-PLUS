@@ -8,7 +8,6 @@ export const getDataset = async (id) => {
   });
 
   const result = await res.json();
-
-  return JSON.parse(result.dataset);
+  return result.dataset;
 
 };
