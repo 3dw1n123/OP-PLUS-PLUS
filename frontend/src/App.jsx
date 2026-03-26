@@ -36,7 +36,7 @@ function App() {
       const { dataset, totalPages } = await getDataset(id, page, offset)
 
       setTotalPages(totalPages)
-      setRows(formatDataset(JSON.parse(dataset)))
+      setRows(dataset)
     }
 
     loadDataset()
