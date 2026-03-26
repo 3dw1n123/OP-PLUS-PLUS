@@ -5,25 +5,15 @@ import { formatDataset } from "./utils/formatDataset";
 import { transform } from "./api/transform";
 import { useParams } from "react-router";
 import { getDataset } from "./api/getDataset";
+import { usePagination } from "./hooks/usePagination";
+import { Pagination } from "./components/Pagination";
 
 function App() {
   const { id } = useParams()
+
+  const { pagination, totalPages, setTotalPages, onNextPage, onPrevPage, onSetOffset } = usePagination()
   const [rows, setRows] = useState([]);
 
-  const loadInitialData = async () => {
-
-    //const res = await fetch("http://127.0.0.1:5000/");
-    //const result = await res.json();
-
-    // const dataset = JSON.parse(result.dataset);
-
-    const { dataset, totalPages } = await getDataset(id)
-
-
-    setRows(formatDataset(JSON.parse(dataset)))
-    setTotalPages(totalPages)
-
-  };
 
   const resetDataset = async () => {
 
@@ -40,9 +30,19 @@ function App() {
   };
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    loadInitialData();
-  }, []);
+
+    const loadDataset = async () => {
+      const { page, offset } = pagination
+      const { dataset, totalPages } = await getDataset(id, page, offset)
+
+      setTotalPages(totalPages)
+      setRows(formatDataset(JSON.parse(dataset)))
+    }
+
+    loadDataset()
+
+  }, [pagination])
+
 
   const onTransform = async (action, payload) => {
     const res = await transform(action, payload);
@@ -67,41 +67,6 @@ function App() {
     a.click()
 
     a.remove()
-  }
-
-  const [page, setPage] = useState(1)
-  const [offset, setOffset] = useState(5)
-  const [totalPages, setTotalPages] = useState(1)
-
-  const onPrevPage = async () => {
-    const { dataset, totalPages } = await getDataset(id, page - 1, offset)
-
-    if (page == 1) return;
-
-    setPage(page - 1)
-    setTotalPages(totalPages)
-    setRows(formatDataset(JSON.parse(dataset)))
-
-  }
-
-  const onNextPage = async () => {
-    const { dataset, totalPages } = await getDataset(id, page + 1, offset)
-
-    if (page == totalPages) return;
-
-    setPage(page + 1)
-    setTotalPages(totalPages)
-    setRows(formatDataset(JSON.parse(dataset)))
-  }
-
-  const onSetOffset = async (ev) => {
-    const newOffset = ev.target.value
-    const { dataset, totalPages } = await getDataset(id, 1, newOffset)
-
-    setPage(1)
-    setOffset(newOffset)
-    setTotalPages(totalPages)
-    setRows(formatDataset(JSON.parse(dataset)))
   }
 
   return (
@@ -225,34 +190,16 @@ function App() {
       </div>
 
       <Table rows={rows} />
-      <div className="flex justify-between">
-        <div className="flex gap-5 items-center">
-          <button onClick={onPrevPage}>
-            {"<-"}
-          </button>
-          <div>
-            {page}
-          </div>
-          <div>
-            ...
-          </div>
-          <div>
-            {totalPages}
-          </div>
-          <button onClick={onNextPage}>
-            {"->"}
-          </button>
-        </div>
-        <div className="flex gap-5 items-center">
-          <label>View:</label>
-          <select onChange={onSetOffset} value={offset}>
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-          </select>
-        </div>
-      </div>
+
+      <Pagination
+        page={pagination.page}
+        offset={pagination.offset}
+        totalPages={totalPages}
+        onPrevPage={onPrevPage}
+        onNextPage={onNextPage}
+        onSetOffset={onSetOffset}
+      />
+
     </>
   );
 }
