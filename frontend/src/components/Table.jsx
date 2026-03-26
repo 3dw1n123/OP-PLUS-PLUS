@@ -34,12 +34,12 @@ export function Table({ rows }) {
 
   return (
     <div className="text-slate-200 flex px-2 py-4 bg-slate-950 rounded-lg overflow-scroll h-96">
-      <table className="w-full whitespace-pre">
+      <table className="w-full whitespace-pre border-separate border-spacing-x-4">
         <thead className="">
           <tr className="text-slate-50 min-w-5 min-h-5">
             {
               Object.keys(rows[0]).map(key => (
-                <th>{key}</th>
+                <th className="h-8">{key}</th>
               ))
             }
           </tr>
@@ -50,9 +50,9 @@ export function Table({ rows }) {
               {
                 Object.values(row).map(value => {
                   if (value === null) {
-                    return <td className="min-w-5 min-h-5 text-red-500">NULL</td>
+                    return <td className="h-8 text-red-500">NULL</td>
                   }
-                  return <td>{value}</td>
+                  return <td className="h-8">{value}</td>
                 })
               }
             </tr>

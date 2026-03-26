@@ -198,7 +198,6 @@ def get_project(
             {"error": f"Not found project with id {project_id}"}, status_code=404
         )
 
-
     total_records = len(store[project_id].dataset)
     start, end, total_pages = pagination(page, offset, total_records)
     df_json = store[project_id].dataset[start:end].to_json(orient="records")
@@ -207,5 +206,5 @@ def get_project(
         "id": project_id,
         "name": store[project_id].name,
         "totalPages": total_pages,
-        "dataset": json.loads(df_json)
+        "dataset": json.loads(df_json),
     }
