@@ -5,21 +5,15 @@ import { formatDataset } from "./utils/formatDataset";
 import { transform } from "./api/transform";
 import { useParams } from "react-router";
 import { getDataset } from "./api/getDataset";
+import { usePagination } from "./hooks/usePagination";
+import { Pagination } from "./components/Pagination";
 
 function App() {
   const { id } = useParams()
+
+  const { pagination, totalPages, setTotalPages, onNextPage, onPrevPage, onSetOffset } = usePagination()
   const [rows, setRows] = useState([]);
 
-  const loadInitialData = async () => {
-
-    //const res = await fetch("http://127.0.0.1:5000/");
-    //const result = await res.json();
-
-    // const dataset = JSON.parse(result.dataset);
-
-    const res = await getDataset(id)
-    setRows(formatDataset(res));
-  };
 
   const resetDataset = async () => {
 
@@ -36,9 +30,19 @@ function App() {
   };
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    loadInitialData();
-  }, []);
+
+    const loadDataset = async () => {
+      const { page, offset } = pagination
+      const { dataset, totalPages } = await getDataset(id, page, offset)
+
+      setTotalPages(totalPages)
+      setRows(formatDataset(JSON.parse(dataset)))
+    }
+
+    loadDataset()
+
+  }, [pagination])
+
 
   const onTransform = async (action, payload) => {
     const res = await transform(action, payload);
@@ -186,6 +190,16 @@ function App() {
       </div>
 
       <Table rows={rows} />
+
+      <Pagination
+        page={pagination.page}
+        offset={pagination.offset}
+        totalPages={totalPages}
+        onPrevPage={onPrevPage}
+        onNextPage={onNextPage}
+        onSetOffset={onSetOffset}
+      />
+
     </>
   );
 }

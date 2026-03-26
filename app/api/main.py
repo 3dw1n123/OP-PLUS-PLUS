@@ -1,6 +1,7 @@
 from uuid import UUID, uuid4
 from enum import Enum
-from fastapi import FastAPI, UploadFile
+from fastapi import FastAPI, Query, UploadFile
+from fastapi.datastructures import Default
 from fastapi.responses import JSONResponse
 from fastapi.responses import StreamingResponse
 
@@ -18,6 +19,7 @@ from app.engine.trim_column import trim_column
 from app.engine.remove_column import remove_column
 from app.engine.export import export_dataframe
 from app.engine.remove_nulls import remove_nulls
+from app.utils.pagination import pagination
 from app.utils.get_file_ext import get_file_ext
 import json
 
@@ -146,10 +148,10 @@ async def upload_file(file: UploadFile):
                 df = pd.read_csv(file.file)
                 print(df)
 
-        if df is not None:
-            dataset = Project(file.filename, df)
-            store[dataset.id] = dataset
-            return {"id": dataset.id, "name": dataset.name}
+        # if df is not None:
+        dataset = Project(file.filename, df)
+        store[dataset.id] = dataset
+        return {"id": dataset.id, "name": dataset.name}
 
     except ValueError:
         return JSONResponse(
@@ -159,28 +161,25 @@ async def upload_file(file: UploadFile):
             status_code=415,
         )
 
+
 @app.get("/export")
 def export(format: str = "csv"):
-
     buffer = export_dataframe(df_current, format)
 
     media_types = {
         "csv": "text/csv",
         "excel": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        "json": "application/json"
+        "json": "application/json",
     }
 
-    filenames = {
-        "csv": "dataset.csv",
-        "excel": "dataset.xlsx",
-        "json": "dataset.json"
-    }
+    filenames = {"csv": "dataset.csv", "excel": "dataset.xlsx", "json": "dataset.json"}
 
     return StreamingResponse(
         buffer,
         media_type=media_types[format],
         headers={"Content-Disposition": f"attachment; filename={filenames[format]}"},
     )
+
 
 # Return all the projects that are currently in memory
 @app.get("/all-projects")
@@ -191,16 +190,22 @@ def get_all_projects():
 
 # Return a specific project that is currently in memory
 @app.get("/project/{project_id}")
-def get_project(project_id: UUID):
+def get_project(
+    project_id: UUID, page: int = Query(1, ge=1), offset: int = Query(5, ge=1, le=100)
+):
     if project_id not in store:
         return JSONResponse(
             {"error": f"Not found project with id {project_id}"}, status_code=404
         )
 
-    df_json = store[project_id].dataset.to_json(orient="records")
+
+    total_records = len(store[project_id].dataset)
+    start, end, total_pages = pagination(page, offset, total_records)
+    df_json = store[project_id].dataset[start:end].to_json(orient="records")
 
     return {
         "id": project_id,
         "name": store[project_id].name,
+        "totalPages": total_pages,
         "dataset": json.loads(df_json)
     }
