@@ -70,24 +70,37 @@ function App() {
   }
 
   const [page, setPage] = useState(1)
+  const [offset, setOffset] = useState(5)
   const [totalPages, setTotalPages] = useState(1)
 
   const onPrevPage = async () => {
-    const { dataset } = await getDataset(id, page - 1, 5)
+    const { dataset, totalPages } = await getDataset(id, page - 1, offset)
 
     if (page == 1) return;
 
     setPage(page - 1)
+    setTotalPages(totalPages)
     setRows(formatDataset(JSON.parse(dataset)))
 
   }
 
   const onNextPage = async () => {
-    const { dataset } = await getDataset(id, page + 1, 5)
+    const { dataset, totalPages } = await getDataset(id, page + 1, offset)
 
     if (page == totalPages) return;
 
     setPage(page + 1)
+    setTotalPages(totalPages)
+    setRows(formatDataset(JSON.parse(dataset)))
+  }
+
+  const onSetOffset = async (ev) => {
+    const newOffset = ev.target.value
+    const { dataset, totalPages } = await getDataset(id, 1, newOffset)
+
+    setPage(1)
+    setOffset(newOffset)
+    setTotalPages(totalPages)
     setRows(formatDataset(JSON.parse(dataset)))
   }
 
@@ -212,22 +225,33 @@ function App() {
       </div>
 
       <Table rows={rows} />
-      <div className="flex gap-5">
-        <button onClick={onPrevPage}>
-          {"<-"}
-        </button>
-        <div>
-          {page}
+      <div className="flex justify-between">
+        <div className="flex gap-5 items-center">
+          <button onClick={onPrevPage}>
+            {"<-"}
+          </button>
+          <div>
+            {page}
+          </div>
+          <div>
+            ...
+          </div>
+          <div>
+            {totalPages}
+          </div>
+          <button onClick={onNextPage}>
+            {"->"}
+          </button>
         </div>
-        <div>
-          ...
+        <div className="flex gap-5 items-center">
+          <label>View:</label>
+          <select onChange={onSetOffset} value={offset}>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+          </select>
         </div>
-        <div>
-          {totalPages}
-        </div>
-        <button onClick={onNextPage}>
-          {"->"}
-        </button>
       </div>
     </>
   );
