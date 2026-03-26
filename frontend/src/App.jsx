@@ -17,8 +17,12 @@ function App() {
 
     // const dataset = JSON.parse(result.dataset);
 
-    const res = await getDataset(id)
-    setRows(formatDataset(res));
+    const { dataset, totalPages } = await getDataset(id)
+
+
+    setRows(formatDataset(JSON.parse(dataset)))
+    setTotalPages(totalPages)
+
   };
 
   const resetDataset = async () => {
@@ -63,6 +67,28 @@ function App() {
     a.click()
 
     a.remove()
+  }
+
+  const [page, setPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+
+  const onPrevPage = async () => {
+    const { dataset } = await getDataset(id, page - 1, 5)
+
+    if (page == 1) return;
+
+    setPage(page - 1)
+    setRows(formatDataset(JSON.parse(dataset)))
+
+  }
+
+  const onNextPage = async () => {
+    const { dataset } = await getDataset(id, page + 1, 5)
+
+    if (page == totalPages) return;
+
+    setPage(page + 1)
+    setRows(formatDataset(JSON.parse(dataset)))
   }
 
   return (
@@ -186,6 +212,23 @@ function App() {
       </div>
 
       <Table rows={rows} />
+      <div className="flex gap-5">
+        <button onClick={onPrevPage}>
+          {"<-"}
+        </button>
+        <div>
+          {page}
+        </div>
+        <div>
+          ...
+        </div>
+        <div>
+          {totalPages}
+        </div>
+        <button onClick={onNextPage}>
+          {"->"}
+        </button>
+      </div>
     </>
   );
 }
