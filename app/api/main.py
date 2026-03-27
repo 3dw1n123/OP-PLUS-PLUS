@@ -92,7 +92,11 @@ def dataset():
 
 
 @app.post("/transform")
-def transform(req: TransformRequest):
+def transform(
+    req: TransformRequest,
+    page: int = Query(1, ge=1),
+    offset: int = Query(5, ge=1, le=100),
+):
     project = store.get(req.dataset_id)
     df_current = project.dataset
     operation = req.operation
@@ -105,8 +109,12 @@ def transform(req: TransformRequest):
 
     df_current = func(df_current, **params)
     project.dataset = df_current
-    df_json = df_current.to_json(orient = "records")
-    return {"dataset": json.loads(df_json)}
+
+    total_records = len(project.dataset)
+    start, end, total_pages = pagination(page, offset, total_records)
+    df_json = df_current[start:end].to_json(orient="records")
+
+    return {"dataset": json.loads(df_json), "totalPages": total_pages}
 
 
 @app.post("/reset")

@@ -28,10 +28,11 @@ function App() {
   }, [pagination])
 
 
-  const onTransform = async (id,action, payload) => {
-    const res = await transform(id,action, payload);
-    const newRows = res;
-    setRows(newRows)
+  const onTransform = async (id, action, payload) => {
+    const { dataset, totalPages } = await transform(id, action, payload, pagination.offset);
+
+    setTotalPages(totalPages)
+    setRows(dataset)
   }
 
 
@@ -142,7 +143,7 @@ function App() {
 
         <button
           onClick={() =>
-            onTransform(id,"filter_number", {
+            onTransform(id, "filter_number", {
               column: "prueba",
               mode: "exact_match",
               value: 2
@@ -154,7 +155,7 @@ function App() {
 
         <button
           onClick={() =>
-            onTransform(id,"remove_nulls", {
+            onTransform(id, "remove_nulls", {
               columns: ["prueba"]
             })
           }

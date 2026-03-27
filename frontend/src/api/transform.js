@@ -1,6 +1,12 @@
-export const transform = async (dataset_id, operation, params) => {
+export const transform = async (dataset_id, operation, params, offset = 5) => {
 
-  const res = await fetch("http://127.0.0.1:5000/transform", {
+  const queryParams = new URLSearchParams({
+    page: 1,
+    offset
+  })
+
+
+  const res = await fetch(`http://127.0.0.1:5000/transform?${queryParams}`, {
 
     method: "POST",
 
@@ -17,6 +23,7 @@ export const transform = async (dataset_id, operation, params) => {
   });
 
   const project = await res.json();
-  return project.dataset
+
+  return project;
 
 };
