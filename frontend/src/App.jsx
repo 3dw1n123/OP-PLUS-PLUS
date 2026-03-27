@@ -13,21 +13,6 @@ function App() {
   const { pagination, totalPages, setTotalPages, onNextPage, onPrevPage, onSetOffset } = usePagination()
   const [rows, setRows] = useState([]);
 
-
-  const resetDataset = async () => {
-
-    const res = await fetch("http://127.0.0.1:5000/reset", {
-      method: "POST"
-    });
-
-    const result = await res.json();
-
-    const dataset = JSON.parse(result.dataset);
-
-    setRows(formatDataset(dataset));
-
-  };
-
   useEffect(() => {
 
     const loadDataset = async () => {
@@ -43,9 +28,9 @@ function App() {
   }, [pagination])
 
 
-  const onTransform = async (action, payload) => {
-    const res = await transform(action, payload);
-    const newRows = formatDataset(res);
+  const onTransform = async (id,action, payload) => {
+    const res = await transform(id,action, payload);
+    const newRows = res;
     setRows(newRows)
   }
 
@@ -157,10 +142,10 @@ function App() {
 
         <button
           onClick={() =>
-            onTransform("filter_number", {
-              column: "Monto_USD",
+            onTransform(id,"filter_number", {
+              column: "prueba",
               mode: "exact_match",
-              value: 100
+              value: 2
             })
           }
         >
@@ -169,22 +154,13 @@ function App() {
 
         <button
           onClick={() =>
-            onTransform("remove_nulls", {
-              columns: ["Nombre"]
+            onTransform(id,"remove_nulls", {
+              columns: ["prueba"]
             })
           }
         >
           Remove nulls
         </button>
-
-        <button
-          onClick={resetDataset}
-          style={{ marginLeft: "10px" }}
-        >
-          Reset dataset
-        </button>
-
-
 
       </div>
 
