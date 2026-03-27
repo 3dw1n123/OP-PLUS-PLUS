@@ -66,6 +66,7 @@ df_current = df.copy()
 
 
 class TransformRequest(BaseModel):
+    dataset_id: UUID
     operation: str
     params: Dict[str, Any] = {}
 
@@ -92,8 +93,8 @@ def dataset():
 
 @app.post("/transform")
 def transform(req: TransformRequest):
-    global df_current
-
+    project = store.get(req.dataset_id)
+    df_current = project.dataset
     operation = req.operation
     params = req.params
 
@@ -103,8 +104,9 @@ def transform(req: TransformRequest):
     func = TRANSFORMATIONS[operation]
 
     df_current = func(df_current, **params)
-
-    return {"dataset": df_current.to_json()}
+    project.dataset = df_current
+    df_json = df_current.to_json(orient = "records")
+    return {"dataset": json.loads(df_json)}
 
 
 @app.post("/reset")
