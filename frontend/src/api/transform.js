@@ -1,4 +1,4 @@
-export const transform = async (operation, params) => {
+export const transform = async (dataset_id, operation, params) => {
 
   const res = await fetch("http://127.0.0.1:5000/transform", {
 
@@ -9,14 +9,14 @@ export const transform = async (operation, params) => {
     },
 
     body: JSON.stringify({
+      dataset_id,
       operation,
       params
     })
 
   });
 
-  const result = await res.json();
-
-  return JSON.parse(result.dataset);
+  const project = await res.json();
+  return project.dataset
 
 };
