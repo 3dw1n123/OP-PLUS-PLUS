@@ -12,6 +12,7 @@ function App() {
 
   const { pagination, totalPages, setTotalPages, onNextPage, onPrevPage, onSetOffset } = usePagination()
   const [rows, setRows] = useState([]);
+  const [selectedColumns, setSelectedColumns] = useState([]);
 
   useEffect(() => {
 
@@ -76,8 +77,8 @@ function App() {
 
         <button
           onClick={() =>
-            onTransform("remove_accent", {
-              columns: ["Nombre", "Categoría"]
+            onTransform(id, "remove_accent", {
+                columns: selectedColumns
             })
           }
         >
@@ -165,7 +166,11 @@ function App() {
 
       </div>
 
-      <Table rows={rows} />
+      <Table
+        rows={rows}
+        selectedColumns={selectedColumns}
+        setSelectedColumns={setSelectedColumns}
+      />
 
       <Pagination
         page={pagination.page}

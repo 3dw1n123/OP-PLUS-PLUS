@@ -1,65 +1,87 @@
-export function Table({ rows }) {
+export function Table({ rows, selectedColumns = [], setSelectedColumns }) {
 
+  // 🔹 Skeleton seguro
   if (rows.length === 0) {
-    const skeleton = Array(5).fill()
+    const skeleton = Array(5).fill();
+
     return (
       <div className="flex px-2 py-4 bg-slate-950 rounded-lg animate-pulse">
         <table className="w-full rounded-lg">
           <thead>
             <tr>
-              {
-                skeleton.map(_ => (
-                  <th className="w-5 h-5"></th>
-                ))
-              }
+              {skeleton.map((_, i) => (
+                <th key={i} className="h-5"></th>
+              ))}
             </tr>
           </thead>
           <tbody>
-            {
-              skeleton.map(_ => (
-                <tr>
-                  {
-                    skeleton.map(_ => (
-                      <td className="w-5 h-5"></td>
-                    ))
-                  }
-                </tr>
-              ))
-            }
+            {skeleton.map((_, i) => (
+              <tr key={i}>
+                {skeleton.map((_, j) => (
+                  <td key={j} className="h-5"></td>
+                ))}
+              </tr>
+            ))}
           </tbody>
-        </table >
+        </table>
       </div>
-    )
+    );
   }
 
   return (
-    <div className="text-slate-200 flex px-2 py-4 bg-slate-950 rounded-lg overflow-scroll h-96">
-      <table className="w-full whitespace-pre border-separate border-spacing-x-4">
-        <thead className="">
-          <tr className="text-slate-50 min-w-5 min-h-5">
-            {
-              Object.keys(rows[0]).map(key => (
-                <th className="h-8">{key}</th>
-              ))
-            }
+    <div className="text-slate-200 flex px-2 py-4 bg-slate-950 rounded-lg overflow-auto h-96">
+      <table className="w-full border-collapse">
+
+        {/* 🔥 HEADER INTERACTIVO */}
+        <thead>
+          <tr className="text-slate-50">
+            {Object.keys(rows[0]).map((key) => (
+              <th
+                key={key}
+                onClick={() => {
+                  setSelectedColumns((prev) =>
+                    prev.includes(key)
+                      ? prev.filter((c) => c !== key) // 🔴 deselecciona
+                      : [...prev, key]                // 🟢 selecciona
+                  );
+                }}
+                className={`h-8 cursor-pointer px-2 transition ${
+                  selectedColumns.includes(key)
+                    ? "bg-blue-600 text-white"
+                    : "hover:bg-slate-700"
+                }`}
+              >
+                {key}
+              </th>
+            ))}
           </tr>
         </thead>
+
+        {/* 🔥 BODY */}
         <tbody>
           {rows.map((row, index) => (
-            <tr key={index} className="">
-              {
-                Object.values(row).map(value => {
-                  if (value === null) {
-                    return <td className="h-8 text-red-500">NULL</td>
-                  }
-                  return <td className="h-8">{value}</td>
-                })
-              }
+            <tr key={index}>
+              {Object.entries(row).map(([key, value], i) => (
+                <td
+                  key={key + i}
+                  className={`h-8 px-2 ${
+                    selectedColumns.includes(key)
+                      ? "bg-blue-500/30"
+                      : ""
+                  }`}
+                >
+                  {value === null ? (
+                    <span className="text-red-500">NULL</span>
+                  ) : (
+                    value
+                  )}
+                </td>
+              ))}
             </tr>
           ))}
         </tbody>
-      </table>
 
+      </table>
     </div>
   );
 }
