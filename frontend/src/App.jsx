@@ -6,6 +6,7 @@ import { useParams } from "react-router";
 import { getDataset } from "./api/getDataset";
 import { usePagination } from "./hooks/usePagination";
 import { Pagination } from "./components/Pagination";
+import { useRef } from "react";
 
 function App() {
   const { id } = useParams()
@@ -30,7 +31,14 @@ function App() {
 
 
   const onTransform = async (id, action, payload) => {
+
     const { dataset, totalPages } = await transform(id, action, payload, pagination.offset);
+
+    // update selectedColumns so it tracks the new names
+    if (action == "rename_columns") {
+      const newSelectedColumns = Object.values(payload["columns"])
+      setSelectedColumns(newSelectedColumns)
+    }
 
     setTotalPages(totalPages)
     setRows(dataset)
@@ -55,6 +63,8 @@ function App() {
     a.remove()
   }
 
+  const renameColumn = useRef(null);
+
   return (
     <>
       <h2 className="text-3xl mb-4">Dataset Table</h2>
@@ -73,12 +83,14 @@ function App() {
 
       </div>
 
+      <input ref={renameColumn} placeholder="New name" type="text" className="text-slate-950 bg-white p-2 border-2 border-slate-950 rounded-2xl" />
+
       <div style={{ marginBottom: "20px" }}>
 
         <button
           onClick={() =>
             onTransform(id, "remove_accent", {
-                columns: selectedColumns
+              columns: selectedColumns
             })
           }
         >
@@ -87,11 +99,10 @@ function App() {
 
         <button
           onClick={() =>
-            onTransform("rename_columns", {
+            onTransform(id, "rename_columns", {
               columns: {
-                Nombre: "Aguacate",
-                Categoría: "Category"
-              }
+                [selectedColumns[0]]: renameColumn.current.value
+              },
             })
           }
         >
@@ -164,7 +175,7 @@ function App() {
           Remove nulls
         </button>
 
-      </div>
+      </div >
 
       <Table
         rows={rows}
