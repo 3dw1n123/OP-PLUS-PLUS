@@ -1,7 +1,6 @@
 import pandas as pd
 
 
-
 def filter_column_text(
     df: pd.DataFrame,
     column: str,
@@ -9,7 +8,6 @@ def filter_column_text(
     mode: str,
     case: bool = False,
 ):
-
     """
     Filter a DataFrame based on text matching rules applied to a specific column.
 
@@ -50,11 +48,12 @@ def filter_column_text(
 
         case "start_with":
             if not case:
-                return df[df[column].str.lower().str.startswith(pat)]
+                return df[df[column].str.lower().str.startswith(pat.lower())]
             return df[df[column].str.startswith(pat)]
 
         case "end_with":
             if not case:
-                return df[df[column].str.lower().str.endswith(pat)]
+                return df[df[column].str.lower().str.endswith(pat.lower())]
             return df[df[column].str.endswith(pat)]
     return df
+
