@@ -11,6 +11,8 @@ def pagination(page: int, offset: int, total_records: int):
     return:
         tuple: Return a tuple of three positions with the (start, end, total_pages)
     """
+    if not total_records:
+        return (1, 1, 1)
 
     # Check if the offset is bigger than the total records
     offset = min(offset, total_records)
