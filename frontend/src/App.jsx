@@ -6,6 +6,7 @@ import { useParams } from "react-router";
 import { getDataset } from "./api/getDataset";
 import { usePagination } from "./hooks/usePagination";
 import { Pagination } from "./components/Pagination";
+import { useRef } from "react";
 
 function App() {
   const { id } = useParams()
@@ -55,6 +56,9 @@ function App() {
     a.remove()
   }
 
+  const pattern = useRef(null);
+  const mode = useRef(null)
+
   return (
     <>
       <h2 className="text-3xl mb-4">Dataset Table</h2>
@@ -73,12 +77,31 @@ function App() {
 
       </div>
 
+      <label className="">
+        <span className="mr-3">
+          Filter Mode:
+        </span>
+        <select ref={mode} className="export-select">
+          <option value="exact_match">Extact match</option>
+          <option value="contains">Contains</option>
+          <option value="start_with">Starts with</option>
+          <option value="end_with">Ends with</option>
+        </select>
+      </label>
+
+      <label>
+        <span className="mr-3">
+          Pattern to filter:
+        </span>
+        <input ref={pattern} className="export-select" />
+      </label>
+
       <div style={{ marginBottom: "20px" }}>
 
         <button
           onClick={() =>
             onTransform(id, "remove_accent", {
-                columns: selectedColumns
+              columns: selectedColumns
             })
           }
         >
@@ -100,14 +123,14 @@ function App() {
 
         <button
           onClick={() =>
-            onTransform("filter_text", {
-              column: "Categoría",
-              pat: "Hogar",
-              mode: "exact_match"
+            onTransform(id, "filter_text", {
+              column: selectedColumns[0],
+              pat: pattern.current.value,
+              mode: mode.current.value
             })
           }
         >
-          Filter Hogar
+          Filter text
         </button>
 
         <button
