@@ -1,4 +1,3 @@
-import { useState } from "react";
 import "./App.css";
 import { Table } from "./components/Table";
 import { useParams } from "react-router";
@@ -29,7 +28,7 @@ function App() {
 
 
   return (
-    <div className="flex flex-col min-h-screen p-4">
+    <div className="h-screen p-4">
       <h2 className="text-3xl mb-4">Dataset Table</h2>
 
       <div className="top-controls">
@@ -45,7 +44,7 @@ function App() {
       </div>
 
       <DataProvider id={id}>
-        <section className="flex gap-8 flex-1">
+        <section className="flex gap-8 h-[80vh]">
 
           <div className="w-[80vw]">
             <Table />
