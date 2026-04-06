@@ -3,11 +3,7 @@ import "./App.css";
 import { Table } from "./components/Table";
 import { useParams } from "react-router";
 import { Pagination } from "./components/Pagination";
-import { RenameColumnCard } from "./components/RenameColumnCard";
 import { DataProvider } from "./context/DataContext";
-import { ProvisionalButtons } from "./components/ProvisionalButtons";
-import { Card } from "./components/Card";
-import { SidebarCard } from "./components/SidebarCard";
 import { Sidebar } from "./components/Sidebar";
 
 function App() {
@@ -33,30 +29,25 @@ function App() {
 
 
   return (
-    <div className="p-4">
+    <div className="flex flex-col min-h-screen p-4">
       <h2 className="text-3xl mb-4">Dataset Table</h2>
 
-      <div>
-        <div className="top-controls">
-
-          <select
-            className="export-select"
-            onChange={(e) => downloadDataset(e.target.value)}
-          >
-            <option value="">Export dataset</option>
-            <option value="csv">CSV</option>
-            <option value="excel">Excel</option>
-            <option value="json">JSON</option>
-          </select>
-
-        </div>
-      </div >
+      <div className="top-controls">
+        <select
+          className="export-select"
+          onChange={(e) => downloadDataset(e.target.value)}
+        >
+          <option value="">Export dataset</option>
+          <option value="csv">CSV</option>
+          <option value="excel">Excel</option>
+          <option value="json">JSON</option>
+        </select>
+      </div>
 
       <DataProvider id={id}>
-        <section className="flex gap-8">
+        <section className="flex gap-8 flex-1">
 
           <div className="w-[80vw]">
-            <ProvisionalButtons />
             <Table />
             <Pagination />
           </div>
@@ -64,6 +55,7 @@ function App() {
           <Sidebar />
 
         </section>
+
 
       </DataProvider>
 

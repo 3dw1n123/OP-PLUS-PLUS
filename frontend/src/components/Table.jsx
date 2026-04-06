@@ -34,7 +34,7 @@ export function Table() {
   }
 
   return (
-    <div className="text-slate-200 flex px-2 py-4 bg-slate-950 rounded-lg overflow-auto h-96">
+    <div className="text-slate-200 flex px-2 py-4 bg-slate-950 rounded-lg overflow-auto h-1/2">
       <table className="w-full border-collapse">
 
         {/* 🔥 HEADER INTERACTIVO */}
@@ -68,7 +68,7 @@ export function Table() {
               {Object.entries(row).map(([key, value], i) => (
                 <td
                   key={key + i}
-                  className={`h-8 px-2 ${selectedColumns.includes(key)
+                  className={`h-8 px-2 min-w-32 ${selectedColumns.includes(key)
                     ? "bg-blue-500/30"
                     : ""
                     }`}

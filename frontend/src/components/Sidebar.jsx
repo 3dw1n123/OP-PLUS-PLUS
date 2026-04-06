@@ -2,6 +2,7 @@ import { useState } from "react"
 import { DataContext } from "../context/DataContext"
 import { RenameColumnCard } from "./RenameColumnCard"
 import { useContext } from "react"
+import { FilterTextCard } from "./FilterTextCard"
 
 export const Sidebar = () => {
 
@@ -21,7 +22,11 @@ export const Sidebar = () => {
         }
       </ul>
 
-      <RenameColumnCard active={active} setActive={setActive} />
+      <div className="grid gap-3">
+        <RenameColumnCard active={active} setActive={setActive} />
+        <FilterTextCard active={active} setActive={setActive} />
+
+      </div>
 
     </div>
   )
