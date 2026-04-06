@@ -9,6 +9,8 @@ import { Pagination } from "./components/Pagination";
 import { Sidebar } from "./components/Sidebar";
 import { Card } from "./components/Card";
 import { useRef } from "react";
+import { SidebarCard } from "./components/SidebarCard";
+import { RenameColumnCard } from "./components/RenameColumnCard";
 
 function App() {
   const { id } = useParams()
@@ -33,10 +35,8 @@ function App() {
 
 
   const onTransform = async (id, action, payload) => {
-
     const { dataset, totalPages } = await transform(id, action, payload, pagination.offset);
 
-    // update selectedColumns so it tracks the new names
     if (action == "rename_columns") {
       const newSelectedColumns = Object.values(payload["columns"])
       setSelectedColumns(newSelectedColumns)
@@ -65,8 +65,7 @@ function App() {
     a.remove()
   }
 
-  const [active, setActive] = useState(false)
-  const renameColumn = useRef(null);
+  const [active, setActive] = useState("")
 
   return (
     <div>
@@ -74,37 +73,7 @@ function App() {
         <h2 className="text-3xl mb-4">Dataset Table</h2>
 
         <section className="grid gap-4">
-
-          <div className="max-w-80 bg-blue-400 text-slate-950 p-2 rounded-xl overflow-hidden ">
-            <Card icon="edit" title="Rename column" desc="Change the name of the current column" action={() => setActive(!active)} />
-
-
-            <div className={`${active ? "max-h-80" : "max-h-0 opacity-0"} duration-200 grid gap-2`}>
-              <label className="flex">
-                <span className="font-bold min-w-fit mr-2">
-                  New name:
-                </span>
-                <input ref={renameColumn} placeholder="New name" type="text" className="w-full text-slate-950 border-b-1 border-slate-950" />
-              </label>
-              <div className="flex justify-between">
-                <button className="text-white font-bold px-4 py-2 rounded-xl bg-slate-900" onClick={() => setActive(false)}>Cancel</button>
-                <button
-                  className="bg-pink-400 px-4 py-2 rounded-xl text-white font-bold cursor-pointer"
-                  onClick={() =>
-                    onTransform(id, "rename_columns", {
-                      columns: {
-                        [selectedColumns[0]]: renameColumn.current.value
-                      },
-                    })
-                  }
-                >
-                  Apply
-                </button>
-              </div>
-            </div>
-
-          </div>
-
+          <RenameColumnCard id={id} column={selectedColumns[0]} onTransform={onTransform} active={active} setActive={setActive} />
         </section >
 
         <div className="top-controls">
