@@ -6,6 +6,9 @@ import { Pagination } from "./components/Pagination";
 import { RenameColumnCard } from "./components/RenameColumnCard";
 import { DataProvider } from "./context/DataContext";
 import { ProvisionalButtons } from "./components/ProvisionalButtons";
+import { Card } from "./components/Card";
+import { SidebarCard } from "./components/SidebarCard";
+import { Sidebar } from "./components/Sidebar";
 
 function App() {
   const { id } = useParams()
@@ -28,10 +31,9 @@ function App() {
     a.remove()
   }
 
-  const [active, setActive] = useState("")
 
   return (
-    <div>
+    <div className="p-4">
       <h2 className="text-3xl mb-4">Dataset Table</h2>
 
       <div>
@@ -51,13 +53,18 @@ function App() {
       </div >
 
       <DataProvider id={id}>
-        <section className="grid gap-4">
-          <RenameColumnCard active={active} setActive={setActive} />
-        </section >
+        <section className="flex gap-8">
 
-        <ProvisionalButtons />
-        <Table />
-        <Pagination />
+          <div className="w-[80vw]">
+            <ProvisionalButtons />
+            <Table />
+            <Pagination />
+          </div>
+
+          <Sidebar />
+
+        </section>
+
       </DataProvider>
 
     </div>

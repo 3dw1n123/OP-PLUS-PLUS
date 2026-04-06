@@ -4,7 +4,7 @@ import { DataContext } from "../context/DataContext"
 export const ProvisionalButtons = () => {
   const { id, selectedColumns } = useContext(DataContext)
   return (
-    <div style={{ marginBottom: "20px" }}>
+    <div className="mb-5 w-full">
 
       <button
         onClick={() =>

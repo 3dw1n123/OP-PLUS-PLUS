@@ -14,7 +14,7 @@ export const RenameColumnCard = ({ active, setActive }) => {
         <span className="font-bold min-w-fit mr-2">
           New name:
         </span>
-        <input ref={renameColumn} placeholder="New name" type="text" className="w-full text-slate-950 border-b-1 border-slate-950" />
+        <input ref={renameColumn} placeholder="New name" type="text" className="w-full text-50 border-b-1 border-slate-50" />
       </label>
       <div className="flex justify-between">
         <button className="text-white font-bold px-4 py-2 rounded-xl bg-slate-900" onClick={() => setActive('')}>Cancel</button>
