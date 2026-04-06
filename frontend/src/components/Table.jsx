@@ -10,7 +10,7 @@ export function Table() {
     const skeleton = Array(5).fill();
 
     return (
-      <div className="flex px-2 py-4 bg-slate-950 rounded-lg animate-pulse">
+      <div className="flex px-2 py-4 bg-slate-950 rounded-lg animate-pulse h-1/2">
         <table className="w-full rounded-lg">
           <thead>
             <tr>
@@ -34,7 +34,7 @@ export function Table() {
   }
 
   return (
-    <div className="text-slate-200 flex px-2 py-4 bg-slate-950 rounded-lg overflow-auto max-h-1/2">
+    <div className="text-slate-200 flex px-2 py-4 bg-slate-950 rounded-lg overflow-auto h-1/2">
       <table className="w-full border-collapse">
 
         {/* 🔥 HEADER INTERACTIVO */}
