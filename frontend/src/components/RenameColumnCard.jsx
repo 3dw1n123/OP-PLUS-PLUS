@@ -1,8 +1,10 @@
 import { useRef } from "react";
 import { SidebarCard } from "./SidebarCard";
+import { DataContext } from "../context/DataContext";
+import { useContext } from "react";
 
-export const RenameColumnCard = ({ id, column, onTransform, active, setActive }) => {
-
+export const RenameColumnCard = ({ active, setActive }) => {
+  const { id, selectedColumns, onTransform } = useContext(DataContext)
   const renameColumn = useRef(null);
 
 
@@ -21,7 +23,7 @@ export const RenameColumnCard = ({ id, column, onTransform, active, setActive })
           onClick={() =>
             onTransform(id, "rename_columns", {
               columns: {
-                [column]: renameColumn.current.value
+                [selectedColumns[0]]: renameColumn.current.value
               },
             })
           }

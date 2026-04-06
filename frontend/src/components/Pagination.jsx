@@ -1,4 +1,10 @@
-export const Pagination = ({ page, offset, totalPages, onNextPage, onPrevPage, onSetOffset }) => {
+import { useContext } from "react"
+import { DataContext } from "../context/DataContext"
+
+export const Pagination = () => {
+
+  const { page, offset, totalPages, onNextPage, onPrevPage, onSetOffset } = useContext(DataContext)
+
   return (
     <div className="flex justify-between">
       <div className="flex gap-5 items-center">

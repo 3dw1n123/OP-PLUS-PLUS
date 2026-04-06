@@ -1,4 +1,9 @@
-export function Table({ rows, selectedColumns = [], setSelectedColumns }) {
+import { useContext } from "react";
+import { DataContext } from "../context/DataContext";
+
+export function Table() {
+
+  const { rows, selectedColumns, setSelectedColumns } = useContext(DataContext)
 
   // 🔹 Skeleton seguro
   if (rows.length === 0) {
@@ -45,11 +50,10 @@ export function Table({ rows, selectedColumns = [], setSelectedColumns }) {
                       : [...prev, key]                // 🟢 selecciona
                   );
                 }}
-                className={`h-8 cursor-pointer px-2 transition ${
-                  selectedColumns.includes(key)
-                    ? "bg-blue-600 text-white"
-                    : "hover:bg-slate-700"
-                }`}
+                className={`h-8 cursor-pointer px-2 transition ${selectedColumns.includes(key)
+                  ? "bg-blue-600 text-white"
+                  : "hover:bg-slate-700"
+                  }`}
               >
                 {key}
               </th>
@@ -64,11 +68,10 @@ export function Table({ rows, selectedColumns = [], setSelectedColumns }) {
               {Object.entries(row).map(([key, value], i) => (
                 <td
                   key={key + i}
-                  className={`h-8 px-2 ${
-                    selectedColumns.includes(key)
-                      ? "bg-blue-500/30"
-                      : ""
-                  }`}
+                  className={`h-8 px-2 ${selectedColumns.includes(key)
+                    ? "bg-blue-500/30"
+                    : ""
+                    }`}
                 >
                   {value === null ? (
                     <span className="text-red-500">NULL</span>
