@@ -3,6 +3,7 @@ import { DataContext } from "../context/DataContext"
 import { RenameColumnCard } from "./RenameColumnCard"
 import { useContext } from "react"
 import { FilterTextCard } from "./FilterTextCard"
+import { RemoveAccentCard } from "./RemoveAccentCard"
 
 export const Sidebar = () => {
 
@@ -25,6 +26,7 @@ export const Sidebar = () => {
       <div className="grid gap-3">
         <RenameColumnCard active={active} setActive={setActive} />
         <FilterTextCard active={active} setActive={setActive} />
+        <RemoveAccentCard active={active} setActive={setActive} />
 
       </div>
 
