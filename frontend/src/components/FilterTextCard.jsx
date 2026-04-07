@@ -9,6 +9,7 @@ export const FilterTextCard = ({ active, setActive }) => {
 
   const pattern = useRef(null);
   const mode = useRef(null)
+  const caseSentitive = useRef(null)
 
   return (
     <SidebarCard icon="filter" title="Filter by text" desc="Filter rows based on a pattern" active={active} setActive={setActive}>
@@ -30,6 +31,14 @@ export const FilterTextCard = ({ active, setActive }) => {
         </span>
         <input ref={pattern} className="export-select" />
       </label>
+
+      <label>
+        <span className="mr-3">
+          Case sensitive:
+        </span>
+        <input ref={caseSentitive} type="checkbox" className="" />
+      </label>
+
       <div className="flex justify-between">
         <button className="text-white font-bold px-4 py-2 rounded-xl bg-slate-900 cursor-pointer" onClick={() => setActive('')}>Cancel</button>
         <button
@@ -38,10 +47,10 @@ export const FilterTextCard = ({ active, setActive }) => {
             onTransform(id, "filter_text", {
               column: selectedColumns[0],
               pat: pattern.current.value,
-              mode: mode.current.value
+              mode: mode.current.value,
+              case: caseSentitive.current.value
             })
           }
-
         >
           Apply
         </button>
