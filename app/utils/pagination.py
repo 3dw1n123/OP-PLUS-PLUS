@@ -1,3 +1,6 @@
+import math
+
+
 def pagination(page: int, offset: int, total_records: int):
     """
     Return a tuple with start and end index based
@@ -18,7 +21,7 @@ def pagination(page: int, offset: int, total_records: int):
     offset = min(offset, total_records)
 
     # Get the total pages
-    total_pages = total_records // offset
+    total_pages = math.ceil(total_records / offset)
 
     # Check if the page is bigger than the total pages
     start = (min(page, total_pages) - 1) * offset
